@@ -8,9 +8,9 @@ class ApiException(
 
 enum class ExceptionMessage(
     val statusCode: HttpStatus,
-    val message: String
+    val message: String = "요청을 처리하지 못 했습니다. 잠시 후 다시 시도해주세요."
 ) {
-    TYPE_EXCEPTION(HttpStatus.BAD_REQUEST, "타입이 잘못되었습니다."),
+    INVALID_STATUS_OR_FIELD(HttpStatus.BAD_REQUEST, "잘못된 필드 혹은 상태입니다."),
     NOT_FOUND(HttpStatus.NOT_FOUND, "해당 데이터를 못 찾았습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 서버 에러입니다.")
 }

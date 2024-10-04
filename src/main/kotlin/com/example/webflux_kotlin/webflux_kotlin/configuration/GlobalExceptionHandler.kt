@@ -2,6 +2,7 @@ package com.example.webflux_kotlin.webflux_kotlin.configuration
 
 import org.slf4j.LoggerFactory
 import org.springframework.core.annotation.Order
+import org.springframework.http.HttpStatus
 import org.springframework.http.codec.HttpMessageWriter
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.HandlerStrategies
@@ -28,6 +29,22 @@ class GlobalExceptionHandler : WebExceptionHandler {
         return when (throwable) {
             is ApiException -> {
                 createResponse(throwable.exception)
+            }
+
+            is IllegalStateException, is IllegalArgumentException -> {
+                ServerResponse
+                    .status(HttpStatus.BAD_REQUEST)
+                    .bodyValue(
+                        ErrorResponse(
+                            errorType = ExceptionMessage.INVALID_STATUS_OR_FIELD.name,
+                            statusCode = HttpStatus.BAD_REQUEST.value(),
+                            message = throwable.message ?: ExceptionMessage.INVALID_STATUS_OR_FIELD.message
+                        )
+                    )
+            }
+
+            is NoSuchElementException -> {
+                createResponse(ExceptionMessage.NOT_FOUND)
             }
 
             else -> {
