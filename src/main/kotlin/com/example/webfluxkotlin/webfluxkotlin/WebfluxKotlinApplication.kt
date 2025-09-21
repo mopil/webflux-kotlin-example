@@ -1,11 +1,13 @@
-package com.example.webflux_kotlin.webflux_kotlin
+package com.example.webfluxkotlin.webfluxkotlin
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories
 
 @SpringBootApplication
+@EnableR2dbcRepositories
 class WebfluxKotlinApplication
 
 fun main(args: Array<String>) {
-	runApplication<WebfluxKotlinApplication>(*args)
+    runApplication<WebfluxKotlinApplication>(*args)
 }

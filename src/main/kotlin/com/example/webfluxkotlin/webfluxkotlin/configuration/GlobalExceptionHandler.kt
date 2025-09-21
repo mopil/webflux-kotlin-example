@@ -1,5 +1,6 @@
-package com.example.webflux_kotlin.webflux_kotlin.configuration
+package com.example.webfluxkotlin.webfluxkotlin.configuration
 
+import com.example.webfluxkotlin.webfluxkotlin.api.dto.response.ErrorResponse
 import org.slf4j.LoggerFactory
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
@@ -17,7 +18,10 @@ import reactor.core.publisher.Mono
 class GlobalExceptionHandler : WebExceptionHandler {
     val logger = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
 
-    override fun handle(exchange: ServerWebExchange, ex: Throwable): Mono<Void> =
+    override fun handle(
+        exchange: ServerWebExchange,
+        ex: Throwable,
+    ): Mono<Void> =
         handle(ex)
             .flatMap {
                 it.writeTo(exchange, HandlerStrategiesResponseContext(HandlerStrategies.withDefaults()))
@@ -38,8 +42,8 @@ class GlobalExceptionHandler : WebExceptionHandler {
                         ErrorResponse(
                             errorType = ExceptionMessage.INVALID_STATUS_OR_FIELD.name,
                             statusCode = HttpStatus.BAD_REQUEST.value(),
-                            message = throwable.message ?: ExceptionMessage.INVALID_STATUS_OR_FIELD.message
-                        )
+                            message = throwable.message ?: ExceptionMessage.INVALID_STATUS_OR_FIELD.message,
+                        ),
                     )
             }
 
