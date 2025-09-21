@@ -1,7 +1,7 @@
 package com.example.webfluxkotlin.webfluxkotlin.configuration
 
 import com.example.webfluxkotlin.webfluxkotlin.api.dto.response.ErrorResponse
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.http.codec.HttpMessageWriter
@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono
 @Component
 @Order(-2) // Order(-1) 에 등록된 DefaultErrorWebExceptionHandler 보다 높은 우선순위를 부여하기 위함.
 class GlobalExceptionHandler : WebExceptionHandler {
-    val logger = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
+    private val logger = KotlinLogging.logger {}
 
     override fun handle(
         exchange: ServerWebExchange,
@@ -30,6 +30,7 @@ class GlobalExceptionHandler : WebExceptionHandler {
             }
 
     fun handle(throwable: Throwable): Mono<ServerResponse> {
+        logger.warn { "GlobalExceptionHandler: ${throwable.message}" }
         return when (throwable) {
             is ApiException -> {
                 createResponse(throwable.exception)

@@ -26,18 +26,24 @@ interface UserService {
             nickname: String,
             rawPassword: String,
         ): User {
-            User(
-                nickname = nickname,
-                password = rawPassword,
-            ).let {
-                logger.info { "Sign Up User id:${it.id} nickname: ${it.nickname}" }
-                return userRepository.save(it)
-            }
+            val user =
+                User(
+                    nickname = nickname,
+                    password = rawPassword,
+                )
+
+            // suspend 함수: DB insert 완료될 때까지 대기
+            val saved = userRepository.save(user)
+
+            // 저장이 완료된 후 로그
+            logger.info { "Sign Up 완료 -> id:${saved.id}, nickname:${saved.nickname}" }
+
+            return saved
         }
 
         override suspend fun getUser(id: Long): User {
             return userRepository.findById(id)
-                ?: throw IllegalArgumentException("Not Found User. id: $id")
+                ?: throw NoSuchElementException("Not Found User. id: $id")
         }
     }
 }
